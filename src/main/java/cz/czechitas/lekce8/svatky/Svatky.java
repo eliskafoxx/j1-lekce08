@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Month;
 import java.time.MonthDay;
+import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Locale;
@@ -116,7 +117,9 @@ public class Svatky {
    *
    */
   public void vypsatJmenaListopad() {
-    //TODO
+    seznamSvatku()
+            .filter(svatek -> svatek.getDen().getMonth().equals(Month.NOVEMBER))
+            .map(Svatek::getJmeno);
   }
 
   /**
@@ -124,8 +127,10 @@ public class Svatky {
    *
    */
   public int pocetUnikatnichJmen() {
-    //TODO
-    return 0;
+      return (int) seznamSvatku()
+              .map(svatek -> svatek.getJmeno())
+              .distinct()
+              .count();
   }
 
   /**
@@ -134,8 +139,12 @@ public class Svatky {
    * @see Stream#skip(long)
    */
   public Stream<String> cervenJmenaOdDesatehoJmena() {
-    //TODO
-    return null;
+    return seznamSvatku()
+            .distinct()
+            .filter(svatek -> svatek.getDen().getMonth().equals(Month.JUNE))
+            .skip(10)
+            .map(Svatek::getJmeno);
+
   }
 
   /**
@@ -144,8 +153,9 @@ public class Svatky {
    * @see Stream#dropWhile(java.util.function.Predicate)
    */
   public Stream<String> jmenaOdVanoc() {
-    //TODO
-    return null;
+    return seznamSvatku()
+            .filter(svatek -> svatek.getDen().isAfter(MonthDay.of(Month.DECEMBER,23)))
+            .map(Svatek::getJmeno);
   }
 
   private static Svatek parseLine(String line) {
